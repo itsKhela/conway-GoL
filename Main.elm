@@ -72,15 +72,15 @@ type alias Cell = (Int, Int)
 
 type alias Model =
   { board : Board
-  , generation : Int
-  , aliveCells : Int
+  -- , generation : Int
+  -- , aliveCells : Int
   }
 
 firstBoard = initBoard 10
 startModel =
   { board = firstBoard
-  , generation = 0
-  , alivecells = 0
+  -- , generation = 0
+  -- , alivecells = 0
   }
 
 
@@ -104,7 +104,8 @@ viewSquare : Bool -> Html Msg
 viewSquare bool =
   let
     colour = if (bool == True) then "black" else "white"
-  in td [ style [("height", "20px"),("width", "20px"),("background-color","colour")]]
+  in td [ style [("height", "20px"),("width", "20px")
+        ,("background-color","colour")]]
     []
 
 viewInnerArray : Array Bool -> Html Msg
