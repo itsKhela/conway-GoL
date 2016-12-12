@@ -26,7 +26,7 @@ getCellState (x, y) board =
 getNumberAliveNeighbors : Cell -> Model -> Int
 getNumberAliveNeighbors cell board =
   getNeighbors cell board
-    |> List.filter (\a -> getCellState cell board)
+    |> List.filter (\a -> getCellState a board)
     |> List.length
 
 checkLifeNextTurn : Cell -> Model -> Bool
@@ -72,6 +72,13 @@ type alias Cell = (Int, Int)
 
 
 firstModel = initModel 10
+listCell =
+  [(2,1),(2,2),(2,3)]
+
+initLife : List Cell -> Model -> Model
+initLife listCell model =
+  List.foldl (\ c m -> (life c m)) model listCell
+
 
 
 -- Update
@@ -95,7 +102,7 @@ viewSquare bool =
   let
     colour = if (bool == True) then "black" else "white"
   in td [ style [("height", "20px"),("width", "20px")
-        ,("background-color","colour")]]
+        ,("background-color",colour)]]
     []
 
 viewInnerArray : Array Bool -> Html Msg
@@ -108,31 +115,32 @@ viewModel model =
   Html.table [] <|
     List.map viewInnerArray (Array.toList model)
 
--- viewButtons : Model -> Html Msg
--- viewButtons model =
---   div []
---       [h1 []
---         [text ("Conway's Game of Life")]
---       , button
---           [ type_ "button"
---           , onClick Next]
---           [ text "Next"]
---
---       , button
---           [ type_ "button"
---           , onClick Play]
---           [ text "Play"]
---
---       , button
---           [ type_ "button"
---           , onClick Pause]
---           [ text "Pause"]
---       ]
+view : Model -> Html Msg
+view model =
+  div []
+      [h1 []
+        [text ("Conway's Game of Life")]
+      , button
+          [ type_ "button"
+          , onClick (Next model)]
+          [ text "Next"]
+
+      , button
+          [ type_ "button"
+          , onClick (Play model)]
+          [ text "Play"]
+
+      , button
+          [ type_ "button"
+          , onClick (Pause model)]
+          [ text "Pause"]
+      , viewModel model
+      ]
 
 main : Program Never Model Msg
 main =
   Html.beginnerProgram
-  { model = firstModel
-  , view = viewModel
+  { model = (initLife listCell firstModel)
+  , view = view
   , update = update
   }
