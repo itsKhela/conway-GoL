@@ -5,14 +5,14 @@ import Html.Events exposing (..)
 import Array exposing (Array)
 
 
-getNeighbors : Cell -> Board -> List Cell
+getNeighbors : Cell -> Model -> List Cell
 getNeighbors (x,y) board =
   [ (x-1, y+1), (x, y+1), (x+1, y+1)
   , (x-1,   y),           (x+1,   y)
   , (x-1, y-1), (x, y-1), (x+1, y-1)
   ]
 
-getCellState : Cell -> Board -> Bool
+getCellState : Cell -> Model -> Bool
 getCellState (x, y) board =
   -- if we are out of bounds = false
   -- else if there is cell a position = Value of position.
@@ -23,13 +23,13 @@ getCellState (x, y) board =
             Nothing -> False
             Just value -> value
 
-getNumberAliveNeighbors : Cell -> Board -> Int
+getNumberAliveNeighbors : Cell -> Model -> Int
 getNumberAliveNeighbors cell board =
   getNeighbors cell board
     |> List.filter (\a -> getCellState cell board)
     |> List.length
 
-checkLifeNextTurn : Cell -> Board -> Bool
+checkLifeNextTurn : Cell -> Model -> Bool
 checkLifeNextTurn cell board =
   if (getCellState cell board) then
     ((getNumberAliveNeighbors cell board == 2) ||
@@ -37,7 +37,7 @@ checkLifeNextTurn cell board =
   else
     (getNumberAliveNeighbors cell board == 3)
 
-life : Cell -> Board -> Board
+life : Cell -> Model -> Model
 life (x, y) board =
   let
     existingRow =
@@ -49,7 +49,7 @@ life (x, y) board =
         (existingRow
           |> Array.set y True)
 
-nextGeneration : Board -> Board
+nextGeneration : Model -> Model
 nextGeneration board  =
   let
     neighbors cell row =
@@ -59,38 +59,28 @@ nextGeneration board  =
     board
       |> Array.indexedMap neighbors
 
-initBoard : Int -> Board
-initBoard size =
+initModel : Int -> Model
+initModel size =
   Array.repeat size (Array.repeat size False)
 
 
 -- Model
-type alias Board =
+type alias Model =
   Array (Array Bool)
 
 type alias Cell = (Int, Int)
 
-type alias Model =
-  { board : Board
-  -- , generation : Int
-  -- , aliveCells : Int
-  }
 
-firstBoard = initBoard 10
-startModel =
-  { board = firstBoard
-  -- , generation = 0
-  -- , alivecells = 0
-  }
+firstModel = initModel 10
 
 
 -- Update
 type Msg
-  = Next Board
-  | Play Board
-  | Pause Board
+  = Next Model
+  | Play Model
+  | Pause Model
 
-update : Msg -> Board -> Board
+update : Msg -> Model -> Model
 update msg board =
   case msg of
     Next board -> nextGeneration board
@@ -113,36 +103,36 @@ viewInnerArray array =
   tr [] <|
     List.map viewSquare (Array.toList array)
 
-viewBoard : Board -> Html Msg
-viewBoard model =
-  table [] <|
+viewModel : Model -> Html Msg
+viewModel model =
+  Html.table [] <|
     List.map viewInnerArray (Array.toList model)
 
-view : Model -> Html Msg
-view model =
-  div []
-      [h1 []
-        [text ("Conway's Game of Life")]
-      , button
-          [ type_ "button"
-          , onClick Next]
-          [ text "Next"]
-
-      , button
-          [ type_ "button"
-          , onClick Play]
-          [ text "Play"]
-
-      , button
-          [ type_ "button"
-          , onClick Pause]
-          [ text "Pause"]
-      ]
+-- viewButtons : Model -> Html Msg
+-- viewButtons model =
+--   div []
+--       [h1 []
+--         [text ("Conway's Game of Life")]
+--       , button
+--           [ type_ "button"
+--           , onClick Next]
+--           [ text "Next"]
+--
+--       , button
+--           [ type_ "button"
+--           , onClick Play]
+--           [ text "Play"]
+--
+--       , button
+--           [ type_ "button"
+--           , onClick Pause]
+--           [ text "Pause"]
+--       ]
 
 main : Program Never Model Msg
 main =
   Html.beginnerProgram
-  { model = startModel
-  , view = view
+  { model = firstModel
+  , view = viewModel
   , update = update
   }
