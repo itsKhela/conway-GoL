@@ -96,11 +96,33 @@ type alias Cell =
 
 
 firstModel =
-    initModel 10
+    initModel 18
 
 
 listCell =
-    [ ( 2, 1 ), ( 2, 2 ), ( 2, 3 ) ]
+    [ ( 4, 5 )
+    , ( 5, 5 )
+    , ( 6, 5 )
+    , ( 4, 6 )
+    , ( 6, 6 )
+    , ( 4, 7 )
+    , ( 5, 7 )
+    , ( 6, 7 )
+    , ( 4, 8 )
+    , ( 5, 8 )
+    , ( 6, 8 )
+    , ( 4, 9 )
+    , ( 5, 9 )
+    , ( 6, 9 )
+    , ( 4, 10 )
+    , ( 5, 10 )
+    , ( 6, 10 )
+    , ( 4, 11 )
+    , ( 6, 11 )
+    , ( 4, 12 )
+    , ( 5, 12 )
+    , ( 6, 12 )
+    ]
 
 
 initLife : List Cell -> Model -> Model
@@ -173,7 +195,7 @@ view model =
         [ style
             [ ( "margin-left", "auto" )
             , ( "margin-right", "auto" )
-            , ( "width", "20em" )
+            , ( "width", "30em" )
             ]
         ]
         [ h1 [ style [ ( "text-align", "center" ) ] ]
